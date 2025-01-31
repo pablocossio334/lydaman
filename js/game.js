@@ -203,15 +203,16 @@ if (detectarColision(jugador, obstaculo) && !invulnerable) {
 }
 });
 }
-document.addEventListener('keydown', function(event) {
-    if (event.key === ' ' && !jugando) {
+function iniciarJuegoOSaltar() {
+    if (!jugando) {
         ocultarMensaje();
         jugando = true;
+        mostrarNivel();
         puntaje = 0;
         vidas = 3;
         puntajeDisplay.textContent = ` ${puntaje}`;
         vidasDisplay.textContent = `x   ${vidas}`;
-    } else if (event.key === ' ' && jugando && !isJumping) {
+    } else if (jugando && !isJumping) {
         isJumping = true;
         jugador.style.transform = 'translateY(-250%)';
         sonidoSalto.play();
@@ -220,8 +221,16 @@ document.addEventListener('keydown', function(event) {
             isJumping = false;
         }, 300);
     }
-});
+}
 
+document.addEventListener('keydown', function(event) {
+    if (event.key === ' ') {
+        iniciarJuegoOSaltar();
+    }
+});
+document.addEventListener('click', function() {
+    iniciarJuegoOSaltar();
+});
 setInterval(() => {
     if (jugando) {
         crearObstaculo();
