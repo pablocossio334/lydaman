@@ -42,6 +42,19 @@ function actualizarTiempo() {
 
 setInterval(actualizarTiempo, 1000);
 
+
+function actualizarResolucion() {
+    let ancho = window.innerWidth;
+    let alto = window.innerHeight;
+    document.getElementById('resolucion').textContent = `Resolución: ${ancho} x ${alto}`;
+}
+
+// Mostrar resolución al cargar la página
+actualizarResolucion();
+
+// Actualizar si cambia el tamaño de la ventana
+window.addEventListener('resize', actualizarResolucion);
+
 document.addEventListener('keydown', function(event) {
     if (event.key === ' ' && !jugando) {
         ocultarMensaje();
