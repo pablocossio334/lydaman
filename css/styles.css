@@ -173,3 +173,9 @@ z-index: 10; /* Asegúrate de que */
         transform: translateX(-1000px);
     }
 }
+@media (min-width: 768px) {
+  body {
+    background-color: lightgray;
+    font-size: 18px;
+  }
+}
