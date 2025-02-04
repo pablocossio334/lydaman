@@ -113,23 +113,7 @@ z-index: 10; /* Asegúrate de que */
     margin-top: 0;
   
 }
-.mensaje {
-    background-image: url('../img/caratula.png');
-    background-size:contain;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    align-items:flex-end;
-    width: 60%;
-    height: 80%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    font-size: 32px;
-    display: none;
-}
+
 .vidasimg{
     width: 14%;
     height: 70%;
@@ -150,10 +134,30 @@ z-index: 10; /* Asegúrate de que */
           padding: 20px; border-radius: 10px;
           z-index: 9999;
 }
-.mensaje .titulo {
-    font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 10px;
+.mensaje {
+    background-image: url('../img/caratula.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 60%;
+    height: 80%;
+    position: absolute;
+    bottom: 0; /* Lo pega al borde inferior */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end; /* Alinea el contenido en la parte inferior */
+    justify-content: center;
+    text-align: center;
+    color: white;
+    font-size: 32px;
+    padding-bottom: 20px; /* Espacio entre el texto y el borde */
+}
+
+/* Estilos para el texto */
+.mensaje p {
+    margin-top: 50%;
+    padding: 10px 0; /* Ajuste para que no quede demasiado pegado */
 }
 
 @keyframes mover {
@@ -179,13 +183,37 @@ z-index: 10; /* Asegúrate de que */
     height: 100px;
     width: 40px;
     position: absolute;
-    border:2px solid red;
-    bottom: 0;
+   
+    bottom: -15px;
     background-image: url('../img/corredor.gif');
    background-repeat:no-repeat;
     background-size:contain;
 
     transition: transform 0.3s ease-out;
 }
-  
+
+.mensaje p{
+    margin-top: 60%;
+    font-size: medium;
+}
+.obstaculo {
+    width: 15%; /* Ajusta el tamaño del obstáculo */
+    height:25%; 
+    position: absolute;
+    bottom: 0;
+    right: -50px;
+    animation: mover 3s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bonus {
+
+    height: 11%;
+    width: 8%;
+    bottom: auto;
+    background-image: url('./LydaP.png');
+    background-repeat:no-repeat;
+    background-size:contain;
+}
 }

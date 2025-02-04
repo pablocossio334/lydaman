@@ -146,9 +146,12 @@ bonus.style.backgroundImage = `url('${bonusImages[randomIndex]}')`;
 let posicionValida = false;
 
 while (!posicionValida) {
-    const minHeight = 250;
-    const maxHeight = contenedor.offsetHeight - 50;
-    const randomTop = Math.random() * (maxHeight - minHeight) + minHeight;
+    const minHeight = contenedor.offsetHeight * 0.2; // Al menos el 20% desde arriba
+const maxHeight = contenedor.offsetHeight * 0.8; // Máximo 80% desde arriba
+const randomTop = Math.random() * (maxHeight - minHeight) + minHeight;
+   // const minHeight = 250;
+    //const maxHeight = contenedor.offsetHeight - 50;
+    //const randomTop = Math.random() * (maxHeight - minHeight) + minHeight;
 
     bonus.style.top = `${randomTop}px`;
     const obstaculoList = document.querySelectorAll('.obstaculo');
