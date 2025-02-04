@@ -12,8 +12,9 @@ const info=document.getElementById('info');
 const mensaje = document.getElementById('mensaje');
 const fondo=document.getElementById('fondo');
 const bonusImages = ['../img/LydaP.png', '../img/lydaN.png', '../img/lydaC.png','../img/lydaL.png'];
+
 const tiempoDisplay = document.getElementById('tiempo');
-const fondos=['../img/arbustos.jpg','../img/desierto.png']
+const fondos=['../img/arbustos.jpg','../img/desierto.jpg','../img/egipto.png ','../img/bosque.png','../img/espacio.png']
 
 let isJumping = false;
 let nivel=1;
@@ -28,7 +29,7 @@ function actualizarTiempo() {
         tiempoJuego++;
         tiempoDisplay.textContent = `Tiempo: ${tiempoJuego} s`;
 
-    if(tiempoJuego>=30)
+    if(tiempoJuego>=10)
     {
         tiempoJuego=0;
         nivel++;
@@ -100,23 +101,68 @@ function ocultarMensaje() {
 
 function detectarColision(jugador, elemento) {
     const margen = 10; // Ajusta este valor según necesites
+const factorColision = 0.3; // Reduce el área efectiva de colisión (ajústalo)
 
-    const jugadorRect = jugador.getBoundingClientRect();
-    const elementoRect = elemento.getBoundingClientRect();
+const jugadorRect = jugador.getBoundingClientRect();
+const elementoRect = elemento.getBoundingClientRect();
 
-    return (
-        jugadorRect.right - margen > elementoRect.left + margen &&
-        jugadorRect.left + margen < elementoRect.right - margen &&
-        jugadorRect.bottom - margen > elementoRect.top + margen &&
-        jugadorRect.top + margen < elementoRect.bottom - margen
-    );
+// Reducir el área de colisión del enemigo
+const elementoCentroX = elementoRect.left + (elementoRect.width / 2);
+const elementoCentroY = elementoRect.top + (elementoRect.height / 2);
+const elementoAnchoReducido = elementoRect.width * factorColision;
+const elementoAltoReducido = elementoRect.height * factorColision;
+
+return (
+    jugadorRect.right - margen > elementoCentroX - elementoAnchoReducido &&
+    jugadorRect.left + margen < elementoCentroX + elementoAnchoReducido &&
+    jugadorRect.bottom - margen > elementoCentroY - elementoAltoReducido &&
+    jugadorRect.top + margen < elementoCentroY + elementoAltoReducido
+);
 }
+
+function crearObstaculoVolador() {
+    const obstaculoVolador = document.createElement("div");
+    obstaculoVolador.classList.add("obstaculo-volador");
+
+    // Posición horizontal (fuera de la pantalla, a la derecha)
+    obstaculoVolador.style.left = "100vw";
+
+    // Posición vertical aleatoria en la parte superior del juego
+    const alturaMin = 20; // Mínima altura
+    const alturaMax = 50; // Máxima altura
+    const posicionY = Math.random() * (alturaMax - alturaMin) + alturaMin;
+    obstaculoVolador.style.top = `${posicionY}vh`; 
+
+    contenedor.appendChild(obstaculoVolador);
+
+    moverObstaculoVolador(obstaculoVolador);
+}
+function moverObstaculoVolador(obstaculoVolador) {
+    let posicionX = window.innerWidth;
+
+    function animar() {
+        if (posicionX < -50) { // Si ya salió de la pantalla, eliminarlo
+            obstaculoVolador.remove();
+        } else {
+            posicionX -= 4; // Velocidad del obstáculo
+            obstaculoVolador.style.left = `${posicionX}px`;
+            requestAnimationFrame(animar);
+        }
+    }
+
+    animar();
+}
+
+
+
+
+
 
 function crearObstaculo() {
     const obstaculo = document.createElement('div');
     obstaculo.classList.add('obstaculo');
 
-    const imgObstaculo = ["../img/enemies/avestruz.gif","../img/enemies/cactus.gif","../img/enemies/Momia-04.gif"];
+    const imgObstaculo = ["../img/enemies/avestruz.gif","../img/enemies/cactus.gif","../img/enemies/Momia-04.gif","../img/enemies/gorila.gif  ","../img/enemies/aliene.gif"];
     const enemigo = document.createElement('img');
     enemigo.src = imgObstaculo[nivel-1]; // Asigna la imagen
     enemigo.alt = "Enemigo"; // Añade texto alternativo
@@ -252,6 +298,13 @@ setInterval(() => {
         crearObstaculo();
     }
 }, 2500);
+
+setInterval(() => {
+    if (Math.random() < 0.4) { // 40% de probabilidad de aparecer cada ciclo
+        crearObstaculoVolador();
+    }
+}, 3000); 
+
 
 setInterval(() => {
     if (jugando) {

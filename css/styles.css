@@ -44,7 +44,17 @@ height: 100%;
 background-size: 20% 100%; /* Para cubrir todo el contenedor sin distorsionar la imagen */
 animation: moverFondo 3s linear infinite;
 }        
-  
+.obstaculo-volador {
+    position: absolute;
+    width: 20%;  /* Ajusta el tamaño según necesites */
+    height: 15%;
+    background-image: url("../img/enemies/pajaro.gif");
+
+   background-repeat:no-repeat;
+    background-size:contain;
+    
+    top: 50px; /* Esto se sobreescribe en el JS */
+}
 .jugador {
     
     height: 129px;
@@ -207,6 +217,12 @@ z-index: 10; /* Asegúrate de que */
     align-items: center;
     justify-content: center;
 }
+
+
+
+
+
+
 .bonus {
 
     height: 11%;
