@@ -173,6 +173,19 @@ z-index: 10; /* Asegúrate de que */
         transform: translateX(-1000px);
     }
 }
-@media (max-width: 720px) {
+@media (max-width: 767px) {
+    .jugador {
+    
+    height: 100px;
+    width: 40px;
+    position: absolute;
+    border:2px solid red;
+    bottom: 0;
+    background-image: url('../img/corredor.gif');
+   background-repeat:no-repeat;
+    background-size:contain;
+
+    transition: transform 0.3s ease-out;
+}
   
 }
