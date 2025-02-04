@@ -174,8 +174,5 @@ z-index: 10; /* Asegúrate de que */
     }
 }
 @media (max-width: 720px) {
-  body {
-    background-color: lightgray;
-    font-size: 18px;
-  }
+  
 }
