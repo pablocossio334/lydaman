@@ -29,7 +29,7 @@ function actualizarTiempo() {
         tiempoJuego++;
         tiempoDisplay.textContent = `Tiempo: ${tiempoJuego} s`;
 
-    if(tiempoJuego>=10)
+    if(tiempoJuego>=20)
     {
         tiempoJuego=0;
         nivel++;
@@ -226,45 +226,94 @@ setTimeout(() => {
 let invulnerable = false;  // Bandera para la invulnerabilidad
 
 function verificarColisiones() {
-const bonusList = document.querySelectorAll('.bonus');
-const obstaculoList = document.querySelectorAll('.obstaculo');
+    const bonusList = document.querySelectorAll('.bonus');
+    const obstaculoList = document.querySelectorAll('.obstaculo');
+    const obstaculoVoladorList = document.querySelectorAll('.obstaculo-volador'); // NUEVO
 
-bonusList.forEach(bonus => {
-if (detectarColision(jugador, bonus)) {
-    puntaje += 10;
-    puntajeDisplay.textContent = ` ${puntaje}`;
-    sondidoBonus.play();
-    bonus.remove();
+    // Verificar colisión con bonus
+    bonusList.forEach(bonus => {
+        if (detectarColision(jugador, bonus)) {
+            puntaje += 10;
+            puntajeDisplay.textContent = ` ${puntaje}`;
+            sondidoBonus.play();
+            bonus.remove();
+        }
+    });
+
+    // Verificar colisión con obstáculos en el suelo
+    obstaculoList.forEach(obstaculo => {
+        if (detectarColision(jugador, obstaculo) && !invulnerable) {
+            manejarColision(obstaculo);
+        }
+    });
+
+    // Verificar colisión con obstáculos voladores
+    obstaculoVoladorList.forEach(obstaculoVolador => {
+        if (detectarColision(jugador, obstaculoVolador) && !invulnerable) {
+            manejarColision(obstaculoVolador);
+        }
+    });
 }
-});
 
-obstaculoList.forEach(obstaculo => {
-if (detectarColision(jugador, obstaculo) && !invulnerable) {
+function manejarColision(obstaculo) {
     sonidoColision.play();
     sonidoColision2.play();
-    invulnerable = true;  // Activar invulnerabilidad
+    invulnerable = true;
     vidas -= 1;
-    obstaculo.removeChild(obstaculo.firstChild);
-    obstaculo.style.backgroundImage = "url('../img/boom.gif')";
     vidasDisplay.textContent = `x  ${vidas}`;
+    
+    // Animación de explosión en el obstáculo
+    obstaculo.style.backgroundImage = "url('../img/boom.gif')";
+    
+    setTimeout(() => {
+        obstaculo.remove();
+    }, 300);
 
     if (vidas <= 0) {
         sonidoGameOver.play();
         alert('¡Juego terminado!');
-        
         jugando = false;
-        
         mostrarMensaje();
         window.location.reload();
     }
 
-    // Desactivar invulnerabilidad después de 3 segundo
+    // Desactivar invulnerabilidad después de 3 segundos
     setTimeout(() => {
         invulnerable = false;
     }, 3000);
 }
-});
+
+function mostrarNivel() {
+    // Crear pantalla negra
+    const pantallaNivel = document.createElement("div");
+    pantallaNivel.style.position = "fixed";
+    pantallaNivel.style.top = "0";
+    pantallaNivel.style.left = "0";
+    pantallaNivel.style.width = "100vw";
+    pantallaNivel.style.height = "100vh";
+    pantallaNivel.style.backgroundColor = "black";
+    pantallaNivel.style.color = "white";
+    pantallaNivel.style.display = "flex";
+    pantallaNivel.style.justifyContent = "center";
+    pantallaNivel.style.alignItems = "center";
+    pantallaNivel.style.fontSize = "5rem";
+    pantallaNivel.style.zIndex = "1000";
+    pantallaNivel.textContent = `Nivel ${nivel}`;
+
+    document.body.appendChild(pantallaNivel);
+
+    // Ocultar fondo del juego
+    fondo.style.display = "none";
+
+    // Mostrar el fondo y ocultar la pantalla negra después de 2 segundos
+    setTimeout(() => {
+        pantallaNivel.remove();
+        fondo.style.display = "block";
+        fondo.style.backgroundImage = `url('${fondos[nivel - 1]}')`;
+    }, 2000);
 }
+
+
 function iniciarJuegoOSaltar() {
     if (!jugando) {
         ocultarMensaje();
@@ -300,9 +349,13 @@ setInterval(() => {
 }, 2500);
 
 setInterval(() => {
-    if (Math.random() < 0.4) { // 40% de probabilidad de aparecer cada ciclo
-        crearObstaculoVolador();
+    if (jugando) {
+        if (Math.random() < 0.4) { // 40% de probabilidad de aparecer cada ciclo
+            crearObstaculoVolador();
+        }
     }
+   
+    
 }, 3000); 
 
 

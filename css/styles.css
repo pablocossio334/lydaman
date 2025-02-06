@@ -46,8 +46,8 @@ animation: moverFondo 3s linear infinite;
 }        
 .obstaculo-volador {
     position: absolute;
-    width: 20%;  /* Ajusta el tamaño según necesites */
-    height: 15%;
+    width: 30%;  /* Ajusta el tamaño según necesites */
+    height: 25%;
     background-image: url("../img/enemies/pajaro.gif");
 
    background-repeat:no-repeat;
