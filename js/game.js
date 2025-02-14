@@ -7,6 +7,7 @@ const sonidoGameOver=new Audio('../sounds/gameOver.mp3')
 const jugador = document.getElementById('jugador');
 const contenedor = document.getElementById('contenedor');
 const puntajeDisplay = document.getElementById('puntaje');
+const nivelDisplay=document.getElementById('nivel');
 const vidasDisplay = document.getElementById('vidasCount');
 const info=document.getElementById('info');
 const mensaje = document.getElementById('mensaje');
@@ -27,9 +28,9 @@ let tiempoJuego = 0;
 function actualizarTiempo() {
     if (jugando) {
         tiempoJuego++;
-        tiempoDisplay.textContent = `Tiempo: ${tiempoJuego} s`;
+        tiempoDisplay.textContent = `Tiempo: ${tiempoJuego-30} s`;
 
-    if(tiempoJuego>=20)
+    if(tiempoJuego>=30)
     {
         tiempoJuego=0;
         nivel++;
@@ -70,16 +71,34 @@ document.addEventListener('keydown', function(event) {
     }
 });
 function mostrarNivel() {
-    nivelMensaje.textContent = `Nivel ${nivel}`; // Muestra el nivel actual
-    nivelMensaje.style.display = 'block'; // Hace visible el mensaje
-    fondo.style.backgroundImage = `url('${fondos[nivel - 1]}')`;
-    fondo.style.display='block';
+    jugando = false; // Detener el juego
+
+    // Crear pantalla negra
+    const pantallaNivel = document.createElement("div");
+    pantallaNivel.style.position = "fixed";
+    pantallaNivel.style.top = "0";
+    pantallaNivel.style.left = "0";
+    pantallaNivel.style.width = "100vw";
+    pantallaNivel.style.height = "100vh";
+    pantallaNivel.style.backgroundColor = "black";
+    pantallaNivel.style.color = "white";
+    pantallaNivel.style.display = "flex";
+    pantallaNivel.style.justifyContent = "center";
+    pantallaNivel.style.alignItems = "center";
+    pantallaNivel.style.fontSize = "5rem";
+    pantallaNivel.style.zIndex = "1000";
+    pantallaNivel.textContent = `Nivel ${nivel}`;
+
+    document.body.appendChild(pantallaNivel);
+    fondo.style.display = "none"; // Ocultar fondo del juego
+
+    // Después de 2 segundos, reanudar el juego
     setTimeout(() => {
-        nivelMensaje.style.display = 'none'; // Oculta el mensaje después de 2 segundos
-        
+        pantallaNivel.remove();
+        fondo.style.display = "block";
+        fondo.style.backgroundImage = `url('${fondos[nivel - 1]}')`;
+        jugando = true; // Reanudar el juego
     }, 2000);
-    
-   
 }
 
 
@@ -120,23 +139,7 @@ return (
 );
 }
 
-function crearObstaculoVolador() {
-    const obstaculoVolador = document.createElement("div");
-    obstaculoVolador.classList.add("obstaculo-volador");
 
-    // Posición horizontal (fuera de la pantalla, a la derecha)
-    obstaculoVolador.style.left = "100vw";
-
-    // Posición vertical aleatoria en la parte superior del juego
-    const alturaMin = 20; // Mínima altura
-    const alturaMax = 50; // Máxima altura
-    const posicionY = Math.random() * (alturaMax - alturaMin) + alturaMin;
-    obstaculoVolador.style.top = `${posicionY}vh`; 
-
-    contenedor.appendChild(obstaculoVolador);
-
-    moverObstaculoVolador(obstaculoVolador);
-}
 function moverObstaculoVolador(obstaculoVolador) {
     let posicionX = window.innerWidth;
 
@@ -179,6 +182,29 @@ function crearObstaculo() {
             obstaculo.remove();
         }
     }, 3000);
+}
+
+
+
+function crearObstaculoVolador() {
+    const obstaculoVolador = document.createElement("img");
+    voladores=["../img/enemies/pajaro.gif","../img/enemies/aguila.gif","../img/enemies/condor.gif","../img/enemies/gorila.gif  ","../img/enemies/aliene.gif"];
+    obstaculoVolador.src=voladores[nivel-1];
+    obstaculoVolador.alt = "Enemigo"; // Añade texto altern
+    obstaculoVolador.classList.add("obstaculo-volador");
+
+    // Posición horizontal (fuera de la pantalla, a la derecha)
+    obstaculoVolador.style.left = "100vw";
+
+    // Posición vertical aleatoria en la parte superior del juego
+    const alturaMin = 20; // Mínima altura
+    const alturaMax = 50; // Máxima altura
+    const posicionY = Math.random() * (alturaMax - alturaMin) + alturaMin;
+    obstaculoVolador.style.top = `${posicionY}vh`; 
+
+    contenedor.appendChild(obstaculoVolador);
+
+    moverObstaculoVolador(obstaculoVolador);
 }
 
 function crearBonus() {
@@ -299,7 +325,7 @@ function mostrarNivel() {
     pantallaNivel.style.fontSize = "5rem";
     pantallaNivel.style.zIndex = "1000";
     pantallaNivel.textContent = `Nivel ${nivel}`;
-
+    nivelDisplay.textContent=`Nivel ${nivel}`;
     document.body.appendChild(pantallaNivel);
 
     // Ocultar fondo del juego
