@@ -15,7 +15,7 @@ const fondo=document.getElementById('fondo');
 const bonusImages = ['../img/LydaP.png', '../img/lydaN.png', '../img/lydaC.png','../img/lydaL.png'];
 
 const tiempoDisplay = document.getElementById('tiempo');
-const fondos=['../img/arbustos.jpg','../img/desierto.jpg','../img/egipto.png ','../img/bosque.png','../img/espacio.png']
+const fondos=['../img/arbustos.jpg','../img/desierto.jpg','../img/egipto.png ','../img/bosque.png','../img/espacio.png','../img/bosque-noche.jpg']
 
 let isJumping = false;
 let nivel=1;
@@ -23,7 +23,7 @@ let puntaje = 0;
 let vidas = 3;
 let jugando = false;
 let tiempoJuego = 0;
-
+let mostrandoNivel = false;
 
 function actualizarTiempo() {
     if (jugando) {
@@ -71,9 +71,8 @@ document.addEventListener('keydown', function(event) {
     }
 });
 function mostrarNivel() {
-    jugando = false; // Detener el juego
+    mostrandoNivel = true; // Bloquea interacción
 
-    // Crear pantalla negra
     const pantallaNivel = document.createElement("div");
     pantallaNivel.style.position = "fixed";
     pantallaNivel.style.top = "0";
@@ -88,26 +87,94 @@ function mostrarNivel() {
     pantallaNivel.style.fontSize = "5rem";
     pantallaNivel.style.zIndex = "1000";
     pantallaNivel.textContent = `Nivel ${nivel}`;
-
+    nivelDisplay.textContent = `Nivel ${nivel}`;
+    
     document.body.appendChild(pantallaNivel);
-    fondo.style.display = "none"; // Ocultar fondo del juego
+    fondo.style.display = "none"; 
 
-    // Después de 2 segundos, reanudar el juego
     setTimeout(() => {
         pantallaNivel.remove();
         fondo.style.display = "block";
         fondo.style.backgroundImage = `url('${fondos[nivel - 1]}')`;
-        jugando = true; // Reanudar el juego
+        mostrandoNivel = false; // Permite interacción nuevamente
     }, 2000);
 }
 
 
+function gameOver() {
+    // Detener el juego
+    jugando = false;
+    // Mostrar el mensaje de Game Over
+    const gameOverScreen = document.createElement('div');
+    gameOverScreen.id = "gameOver";
+    gameOverScreen.style.position = "fixed";
+    gameOverScreen.style.top = "0";
+    gameOverScreen.style.left = "0";
+    gameOverScreen.style.width = "100vw";
+    gameOverScreen.style.height = "100vh";
+    gameOverScreen.style.backgroundColor = "black";
+    gameOverScreen.style.color = "white";
+    gameOverScreen.style.display = "flex";
+    gameOverScreen.style.justifyContent = "center";
+    gameOverScreen.style.alignItems = "center";
+    gameOverScreen.style.fontSize = "6rem";
+    gameOverScreen.textContent = "Game Over!";
+    document.body.appendChild(gameOverScreen);
+
+    // Espera 5 segundos y luego reinicia el juego
+    setTimeout(function() {
+        // Eliminar la pantalla de Game Over
+        gameOverScreen.remove();
+        // Reiniciar el juego
+        window.location.reload();
+    }, 5000);
+}
 
 
 function mostrarMensaje() {
     mensaje.style.display = 'block';
 
 }
+function crearBurbuja() {
+    let mensaje = document.getElementById("mensaje");
+
+    // Solo crear burbujas si el título está visible
+    if (window.getComputedStyle(mensaje).display === "none") return;
+
+    let burbuja = document.createElement("div");
+    burbuja.classList.add("burbuja");
+
+    let tamaño = Math.random() * 20 + 10; // Tamaño aleatorio entre 10px y 30px
+    burbuja.style.width = `${tamaño}px`;
+    burbuja.style.height = `${tamaño}px`;
+
+    burbuja.style.left = `${Math.random() * 100}vw`; // Se generan en cualquier parte de la pantalla
+    burbuja.style.animationDuration = `${4 + Math.random() * 2}s`; // Duración aleatoria entre 4s y 6s
+
+    document.body.appendChild(burbuja);
+
+    setTimeout(() => {
+        burbuja.remove();
+    }, 6000); // Se eliminan después de 6s
+}
+
+let intervaloBurbujas;
+function activarBurbujas() {
+    intervaloBurbujas = setInterval(crearBurbuja, 500);
+}
+
+function desactivarBurbujas() {
+    clearInterval(intervaloBurbujas);
+}
+
+// Activar burbujas cuando se carga la página
+document.addEventListener("DOMContentLoaded", activarBurbujas);
+
+// Detener burbujas al hacer clic en el título
+document.getElementById("mensaje").addEventListener("click", function () {
+    desactivarBurbujas();
+});
+
 
 function ocultarMensaje() {
     mensaje.style.display = 'none';
@@ -142,12 +209,13 @@ return (
 
 function moverObstaculoVolador(obstaculoVolador) {
     let posicionX = window.innerWidth;
+    let velocidad = 8; // Ajusta la velocidad (mayor que la de los enemigos normales)
 
     function animar() {
-        if (posicionX < -50) { // Si ya salió de la pantalla, eliminarlo
+        if (posicionX < -50) {
             obstaculoVolador.remove();
         } else {
-            posicionX -= 4; // Velocidad del obstáculo
+            posicionX -= velocidad; // Se mueve más rápido que los enemigos normales
             obstaculoVolador.style.left = `${posicionX}px`;
             requestAnimationFrame(animar);
         }
@@ -165,7 +233,7 @@ function crearObstaculo() {
     const obstaculo = document.createElement('div');
     obstaculo.classList.add('obstaculo');
 
-    const imgObstaculo = ["../img/enemies/avestruz.gif","../img/enemies/cactus.gif","../img/enemies/Momia-04.gif","../img/enemies/gorila.gif  ","../img/enemies/aliene.gif"];
+    const imgObstaculo = ["../img/enemies/avestruz.gif","../img/enemies/cactus.gif","../img/enemies/Momia-04.gif","../img/enemies/gorila.gif  ","../img/enemies/aliene.gif","../img/enemies/Monstruo.gif"];
     const enemigo = document.createElement('img');
     enemigo.src = imgObstaculo[nivel-1]; // Asigna la imagen
     enemigo.alt = "Enemigo"; // Añade texto alternativo
@@ -188,7 +256,7 @@ function crearObstaculo() {
 
 function crearObstaculoVolador() {
     const obstaculoVolador = document.createElement("img");
-    voladores=["../img/enemies/pajaro.gif","../img/enemies/aguila.gif","../img/enemies/condor.gif","../img/enemies/gorila.gif  ","../img/enemies/aliene.gif"];
+    voladores=["../img/enemies/pajaro.gif","../img/enemies/aguila.gif","../img/enemies/condor.gif","../img/enemies/picaflor.gif  ","../img/enemies/ovni.gif","../img/enemies/murcielago.gif"];
     obstaculoVolador.src=voladores[nivel-1];
     obstaculoVolador.alt = "Enemigo"; // Añade texto altern
     obstaculoVolador.classList.add("obstaculo-volador");
@@ -282,6 +350,8 @@ function verificarColisiones() {
 }
 
 function manejarColision(obstaculo) {
+    if (!jugando) return; // Evita que el juego continúe si ya se terminó
+
     sonidoColision.play();
     sonidoColision2.play();
     invulnerable = true;
@@ -297,10 +367,7 @@ function manejarColision(obstaculo) {
 
     if (vidas <= 0) {
         sonidoGameOver.play();
-        alert('¡Juego terminado!');
-        jugando = false;
-        mostrarMensaje();
-        window.location.reload();
+        gameOver();  // Llama a gameOver() cuando las vidas sean 0
     }
 
     // Desactivar invulnerabilidad después de 3 segundos
@@ -308,7 +375,6 @@ function manejarColision(obstaculo) {
         invulnerable = false;
     }, 3000);
 }
-
 function mostrarNivel() {
     // Crear pantalla negra
     const pantallaNivel = document.createElement("div");
@@ -341,6 +407,8 @@ function mostrarNivel() {
 
 
 function iniciarJuegoOSaltar() {
+    if (mostrandoNivel) return; // 🚨 Evita interacción mientras la pantalla negra está activa
+
     if (!jugando) {
         ocultarMensaje();
         jugando = true;
@@ -351,7 +419,7 @@ function iniciarJuegoOSaltar() {
         vidasDisplay.textContent = `x   ${vidas}`;
     } else if (jugando && !isJumping) {
         isJumping = true;
-        jugador.style.transform = 'translateY(-250%)';
+        jugador.style.transform = 'translateY(-350%)';
         sonidoSalto.play();
         setTimeout(() => {
             jugador.style.transform = 'translateY(0)';

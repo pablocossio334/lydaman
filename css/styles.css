@@ -116,6 +116,27 @@ box-sizing: border-box; /* Padding incluido en el ancho total */
 z-index: 10; /* Asegúrate de que */
 
 }
+.game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 50px;
+    font-weight: bold;
+    padding: 20px 40px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+    display: none;
+}
+.game-over img{
+    height: 100%;
+    width: 100%;
+}
+
+
 
 .vidas{
     height: 90%;
@@ -152,16 +173,41 @@ z-index: 10; /* Asegúrate de que */
     width: 60%;
     height: 80%;
     position: absolute;
-    bottom: 0; /* Lo pega al borde inferior */
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    align-items: flex-end; /* Alinea el contenido en la parte inferior */
+    align-items: flex-end;
     justify-content: center;
     text-align: center;
     color: white;
     font-size: 32px;
-    padding-bottom: 20px; /* Espacio entre el texto y el borde */
+    padding-bottom: 20px;
+    overflow: hidden; /* Evita que las burbujas salgan del contenedor */
+}
+
+/* Estilos de las burbujas */
+@keyframes burbujear {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-120vh) scale(1.5); /* Ahora suben más alto */
+        opacity: 0;
+    }
+}
+
+.burbuja {
+    position: absolute;
+    bottom: 0; /* Comienzan desde la parte inferior de la pantalla */
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(240, 100, 7, 0.5);
+    border-radius: 50%;
+    animation: burbujear 5s infinite ease-in-out;
+    pointer-events: none; /* Para que no interfieran con clics */
 }
 
 /* Estilos para el texto */
